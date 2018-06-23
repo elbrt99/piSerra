@@ -1,114 +1,85 @@
-# Pigrow
-Raspberry Pi Grow Box Control Software
+# PiSerra
+Software di controllo di un box PiSerra
 
-The Pigrow is an automation devices designed to help gardeners monitor, log, graph and control their grow space using a raspberry Pi, a DHT22 sensor and a few relay modules. All software, designs and content are shared with open-source licenses, it's free to make and cheap to buy.
-
-For more information visit;
+Per ulteriore documentazione sul software originale visita:
 
      https://www.patreon.com/Pigrow
 
      https://www.reddit.com/r/Pigrow/
 
-#Work in Progress
 
-The Pigrow is currently undergoing development and a full and stable release is due soon, but when soon is who knows... In the meantime, the pigrow is fully working and in use on several boxes all giving great results. The timelapse feature, automatic control and logging of devices and etc have all been well tested however the configuration can be complex and confusing at times. The remote gui is the current priority as this will make the whole process very simple. 
+#Come costruire una PiSerra
 
-#How to Pigrow...
+Per prima cosa hai bisogno dell'hardware, segui la guida alla creazione disponibile su www.reddit.com/r/Pigrow/wiki/index per avere un'idea.
 
-First you need the hardware, follow the build guide available on the www.reddit.com/r/Pigrow/wiki/index for the most recent instructions. 
+Quando avrai un raspberry funzionante collegato alla tua rete, ai sensori e ai relè appropriati, potrai usare la GUI  o connetterti al pi tramite un terminale della riga di comando SSH o con il pi collegato ad uno schermo, tastiera e topo.
+#Primo passo  
+Supponendo che tu abbia un Pi connesso a internet e che tu abbia effettuato l'accesso tramite ssh o utilizzandolo con una tastiera e uno schermo collegati;
 
-When you have a working raspberry pi connected to your network and the appropriate sensors and relays you can either use the GUI [work in progress] or connect to the pi via an SSH command line terminal or with the pi plugged into a screen, keyboard and mouse.
+Per prima cosa è necessario installare il software, per farlo clona la repository git usando il comando
+     git clone https://github.com/elbrt99/PiSerra
 
-#First Steps 
-  
- Assuming you have an internet connected Pi and you're logged in via ssh or using it with a keyboard and screen attached; 
-  
- First you need to install the software, to do that clone the git repository using the command
- 
-     git clone https://github.com/Pragmatismo/Pigrow
-
-this will copy all the files into /home/pi/Pigrow, now run the setup program 
+questo copierà tutti i file all'interno di /home/pi/Pigrow, ora avvia il programma di setup:
 
     cd Pigrow/scripts/config
     ./setup.py
     
-this opens a text menu offering a number of options, the first is install dependences select it by typing 1 and pressing return, this will download and install all the resources and dependences for the Pigrow, it may take a while. 
+Questo script apre un menu di testo che offre un certo numero di opzioni, il primo è installa dipendenze. Selezionalo digitando 1 e premendo Invio, questo scaricherà e installerà tutte le risorse e le dipendenze per la PiSerra, potrebbe richiedere un po 'di tempo.
 
-Your Pigrow is now ready for use. 
+La tua PiSerra è pronta all'uso ora!
 
-#Setting up a Webcam and starting a Timelapse 
+#Settaggio Webcam e inizio Timelapse
+esegui lo script di configurazione della webcam che si trova nella cartella /Pigrow/scripts/config/ e segui le istruzioni finché non sei soddisfatto dell'immagine catturata dalla tua fotocamera e quando sei nelle condizioni di illuminazione in cui intendi utilizzarla - ricorda SALVA le impostazioni una volta che ti gasano.
 
-run the webcam config script found in the /Pigrow/scripts/config/ folder and follow the instructions until you're happy with the image captured by your camera when in the lighting conditions you intend to use it in - remember SAVE your settings once you're happy with them. 
+esegui setup.py e seleziona cron run scripts, quindi seleziona script ripetuti e segui le istruzioni per scegliere lo script di acquisizione della videocamera e la frequenza di ripetizione della tua scelta - al momento la scelta migliore è probabilmente camcap.py ogni cinque minuti.
 
-run setup.py and select cron run scripts, then select repeating scripts and follow the prompts to choose the camera capture script and repeat rate of your choice -- at the moment your best choice is probably camcap.py every five min. 
-  
-once this is set your pi will start taking images every N amount of time, this will keep happening even if you restart your pi so to stop it you need to come back into setup.py and remove the cron job which triggers the camera, this can also be done via the reddit message-control script and soon the remote gui.  
-  
-From the pi you can run Pigrow/scripts/visulaisation/timelapse_assemble.py to construct a timelapse, run the script with the flag -h to get a full list of command line options and some usage instructions. This script can also be run from a linux machine with MPV installed when the files have been downloaded manually or they can be automatically downloaded using the remote gui and the timelapse made using that [work in progress] 
+una volta impostato, il tuo pi inizierà a scattare immagini ogni N minuti, questo continuerà ad accadere anche se riavvii il tuo pi, quindi per fermarlo dovrai tornare in setup.py e rimuovere il cron job che attiva la fotocamera dal menù apposito.
 
-#Everything else
+Dal pi è possibile eseguire Pigrow/scripts/visulaisation/timelapse_assemble.py per costruire un timelapse, eseguendo lo script con il flag -h otterrai un elenco completo delle opzioni della riga di comando e alcune istruzioni per l'uso. Questo script può anche essere eseguito da una macchina Linux con MPV installato quando i file sono stati scaricati manualmente o possono essere scaricati automaticamente usando la GUI remota.
 
-should be fairly obvious or isn't yet finished, any questions message me on the pigrow sub.
+#scripts da chiamare da cron;
 
-#
-
-#old and wrong stuff
-
-
-The following is out of date but sections of it may still be useful,
-
-----------
-
-#scripts to be called by cron;
-
-To add a one of the following timelapse programs to cron simply use;
+Per aggiungere semplicemente uno dei seguenti programmi timelapse al cron devi:
 
        sudo crontab -e
 
-and at the bottom of the file after the explanation of how it works add the line;
+e nella parte inferiore del file dopo la spiegazione di come funziona aggiungere la linea:
 
        */1 * * * * python /home/pi/Pigrow/scripts/camcap_text_simple.py
 
-This will run the script and take an image every one min.
+Questo eseguirà lo script e catturerà un'immagine ogni minuto.
 
               Camera -
-                     - camcap.py - captures just a single image for
-                     - camcap_text_simple.py - captures image and adds date and sensor data to it.
-            !!!!     - camcap_text_colour.py - text colour changes according to sensor data.
+                     - camcap.py - cattura una singola immagine
+                     - camcap_text_simple.py - cattura un'immagine e ci aggiunge la data e i dati dei sensori 
+            !!!!     - camcap_text_colour.py - cambia il colore del testo in base ai dati forniti dai sensori
 
 
-To set up a 12:12 light cycle simple add the two lines;
+Per settare un ciclo di luce 12:12 basta aggiungere semplicemente due righe:
 
      0 10 * * * python /home/pi/pigrow3/lamp_on.py
      0 22 * * * python /home/pi/pigrow3/lamp_off.py     
 
-This turns the lamp on at ten am and off at ten pm. Try not to turn on fans and lamps at exactly the same time, it will work but both items cause power-spikes which if combined might trip your RCD.
-
+Questo accenderà la lampada alle dieci del mattino e la spegnerà alle dieci di sera. Cerca di non accendere le ventole e le lampade esattamente nello stesso momento, funzionerà ma entrambi gli elementi causano picchi di potenza che, se combinati, potrebbero far scattare il tuo RCD.
               Relay -
-                    - lamp_on / off - actuates lamp relay
-                    - fan_on / off - for manual timing of fan
-                    - heat_on / off - for manual timing of heat
-                    - dehumi_on / off - for manual timing of dehumidifier
+                    - lamp_on / off - attiva lamp relay
+                    - fan_on / off - per gestione manuale ventole
+                    - heat_on / off - per gestione manuale riscaldatore
+                    - dehumi_on / off - per gestione manuale deumidificatore
 
-These scripts are run periodically as with the camera scripts to check the health of the pi or it's friend, you can check many pi's by calling the script many times.
+Questi script vengono eseguiti periodicamente come con gli script della fotocamera per verificare lo stato di salute del pi o di un amico, è possibile controllare molti pi chiamando lo script molte volte.
 
         Sanity Check -
                      - self_awareness - sensor log, camera, health check
                      - nosey_neighbour - check on a brother pigrow
 
-Scripts to be constantly running;
+Scripts da eseguire continuamente:
 
-This is some init.d business i'll be back to explain once the script is uploaded...
-
-          autorunlog.py - logs sensor data to file, switches heaters or fans according to sensor data
-
-
-
-
+          autorunlog.py - registra i log dei sensori in un file, switcha le ventole o i riscaldatori in accordo con i sensori.
 
 ------- Useful information which might be needed before release of setup scripts
 
-#Installing 3rd party software commands;
+#Installare software di Terze parti:
 
 --Adafruit DHT sensor drivers,
 
@@ -118,42 +89,41 @@ This is some init.d business i'll be back to explain once the script is uploaded
     sudo apt-get install build-essential python-dev python-openssl
     sudo python setup.py install
 
-      -more information at, https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/software-install-updated
+      -Più informazioni su, https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/software-install-updated
 
 --From linux Repository
 
-     sudo apt-get install uvccapture           #for use with camera
+     sudo apt-get install uvccapture           #per usare la camera
 
-     sudo pip install pexpect                  #for use when logging other pigrows health
+     sudo pip install pexpect                  #da usare quando sono attivate più piSerre
 
-     sudo apt-get install python-matplotlib    #for making graphs
+     sudo apt-get install python-matplotlib    #per creare grafici
 
-     sudo apt-get install sshpass              #for downloadinging images
+     sudo apt-get install sshpass              #per scaricare i file e le immagini
 
-     sudo apt install mpv                      #for rendering timelapse movies
+     sudo apt install mpv                      #per assemblare i video in timelapse
 
-     pip install python-crontab                #for config of timelapse and relay timing
+     pip install python-crontab                #per configurare la temporizzazione di relay e scripts
 
+-su sistemi diversi da Raspberry dovrai probabilmente scaricare
 
--on systems other than Raspbian you may also need;
-
-     sudo apt-get install python-pip           #for adding python modules
+     sudo apt-get install python-pip           #per aggiungere moduli Python
      pip install pillow                        #PIL the Python Image Library (for camera capture scripts that edit image)
      sudo apt-get install gpicview             #used by the config program (non-vital, easy to change-out in the code)
 
 
-#directory structure
+#struttura cartelle
 
             mkdir /home/pi/Pigrow/logs
             mkdir /home/pi/Pigrow/config
             mkdir /home/pi/Pigrow/graphs
             mkdir /home/pi/cam_caps
 
-#to set timed events using cron (the semi-manual way)
+#per settare eventi temporizzati (in modo semi manuale)
 
      crontab -e
 
-lines to include might look like;
+le linee da aggiungere saranno del tipo...
 
      0 7 * * * python /home/pi/pigrow2/lampon.py           #turns lamp relay on at 7 am
      0 1 * * * python /home/pi/pigrow2/lampoff.py          #turns lamp relay off at 1 am
